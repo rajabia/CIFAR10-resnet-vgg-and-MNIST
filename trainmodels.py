@@ -83,12 +83,9 @@ def main():
 	elif args.dataset=='cifar10':
 		m= ['vgg11', 'vgg11_bn', 'vgg13', 'vgg13_bn', 'vgg16', 'vgg16_bn',
 			'vgg19_bn', 'vgg19', 'ResNet', 'resnet20', 'resnet32', 'resnet44',
-			 'resnet56', 'resnet110', 'resnet1202'
-]
+			 'resnet56', 'resnet110', 'resnet1202']
 		if args.model_type in m:
-			#model=AllModels.vgg19().to(device)
 			
-			#module = import_module(model,args.model_type.lower())
 			func = getattr(AllModels, args.model_type.lower())
 			model=func(10).to(device)
 		      	file_name=file_name[:-3]+'_'+args.model_type.lower()+'.pt'
