@@ -13,6 +13,9 @@ import os
 from importlib import import_module
 torch.manual_seed(1)
 
+if not os.path.exists('models):
+    os.makedirs('models')
+
 def train(model, train_loader,optimizer,device,epoch):
 	model.train()
 	for batch_indx, (data,target) in enumerate(train_loader):
@@ -71,7 +74,8 @@ def main():
 		print('Using CUDA, GPU is available')
 	else:
 		device=torch.device("cpu")
-
+		      
+	file_name='models/'+str(args.dataset)+'.pt'
 	if args.dataset=='mnist':
 		model=AllModels.mnist_model().to(device)
 		train_data=datasets.MNIST('./data',train=True, download=True,transform=transform)
@@ -87,6 +91,8 @@ def main():
 			#module = import_module(model,args.model_type.lower())
 			func = getattr(AllModels, args.model_type.lower())
 			model=func(10).to(device)
+		      	file_name=file_name[:-3]+'_'+args.model_type.lower()+'.pt'
+		      
 		else:
 			print('Unknown Model Type. Select from '+ model_type.join())
 			quit()
@@ -108,7 +114,7 @@ def main():
 		train(model, train_loader,optimizer,device,i+1)
 		l, acc=test(model, test_loader,device)
 		scheduler.step()
-		file_name='models/'+str(args.dataset)+'.pt'
+		
 		if l<test_loss and args.save_metric=='loss':
 			
 			tyorch.save(model.state_dict(),file_name)
